@@ -1,0 +1,8 @@
+<package name="olgaVA">
+	<run>
+		<command name="olgaVA" class="iristk.app.olgaVA.OlgaVASystem"/>
+	</run>
+	<classpath>
+		<src path="src" output="bin"/>
+	</classpath>
+</package>

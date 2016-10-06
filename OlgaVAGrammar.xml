@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grammar xml:lang="en-US" version="1.0" root="root"
+    xmlns="http://www.w3.org/2001/06/grammar" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.w3.org/2001/06/grammar http://www.iristk.net/xml/srgs.xsd"
+    tag-format="semantics/1.0">
+
+    <rule id="root" scope="public">
+        <one-of>
+            <item>
+                <item repeat="0-1">
+                    <one-of>
+                        <item>My name is </item>
+                        <item>I am </item>
+                        <item>I would like you to call me </item>
+                        <item>Call me </item>
+                        <item><ruleref uri="#yes"/></item>
+                    </one-of>
+                </item>
+                <ruleref uri="#name"/>
+                <tag>out.name = rules.name</tag>
+                <item repeat="0-1">please</item>
+            </item>
+            <item>
+                <ruleref uri="#yes"/>
+                <tag>out.yes=1</tag>
+            </item>
+            <item>
+                <ruleref uri="#no"/>
+                <tag>out.no=1</tag>
+            </item>
+        </one-of>
+    </rule>
+
+    <rule id="name">
+        <item repeat="1-3">
+            <one-of>
+                <item>
+                    <ruleref uri="#firstName" />
+                    <tag>out.firstName = rules.firstName</tag>
+                </item>
+                <item>
+                    <ruleref uri="#age" />
+                    <tag>out.age = rules.age</tag>
+                </item>
+            </one-of>
+            <item repeat="0-1">and</item>
+        </item>
+    </rule>
+
+    <rule id="firstName">
+        <one-of>
+            <item>
+                <item repeat="0-1">
+                    <ruleref uri="#first" />
+                    <tag>out.first = rules.first</tag>
+                </item>
+                <item repeat="0-1">
+                    <ruleref uri="#last" />
+                    <tag>out.last = rules.last</tag>
+                </item>
+                <one-of>
+                    <item>
+                        <one-of>
+                            <item>Stew</item>
+                            <item>Dan</item>
+                            <item>Jens</item>
+                        </one-of>
+                        <tag>out.n="Dan"</tag>
+                    </item>
+                    <item>
+                        <one-of>
+                            <item>Maria</item>
+                            <item>Laura</item>
+                        </one-of>
+                        <tag>out.n="Maria"; out.s="female"</tag>
+                    </item>
+                </one-of>
+            </item>
+        </one-of>
+    </rule>
+
+    <rule id="age" scope="public">
+        <one-of>
+            <item>
+                <item repeat="0-1">
+                    <ruleref uri="#count" />
+                    <tag>out.count = rules.count</tag>
+                </item>
+                <item repeat="0-1">
+                    <ruleref uri="#size" />
+                    <tag>out.size = rules.size</tag>
+                </item>
+                <one-of>
+                    <item>
+                        
+                        <item>Engineer</item>
+                        <tag>out.type="Engineer"</tag>
+                    </item>
+                    <item>teacher<tag>out.type="teacher"</tag></item>
+                    <item>Doctor<tag>out.type="Doctor"</tag></item>
+                    <item>Driver<tag>out.type="Driver"</tag></item>
+                </one-of>
+            </item>
+        </one-of>
+    </rule>
+
+    <rule id="side" scope="public">
+        <one-of>
+            <item>
+                <item repeat="0-1">
+                    <ruleref uri="#count" />
+                    <tag>out.count = rules.count</tag>
+                </item>
+                <item repeat="0-1">
+                    <ruleref uri="#size" />
+                    <tag>out.size = rules.size</tag>
+                </item>
+                <one-of>
+                    <item>
+                        <one-of>
+                            <item>fries</item>
+                            <item>some fries</item>
+                            <item>bag of fries</item>
+                        </one-of>
+                        <tag>out.type="fries"</tag>
+                    </item>
+                    <item>sallad<tag>out.type="sallad"</tag></item>
+                </one-of>
+            </item>
+        </one-of>
+    </rule>
+
+    <rule id="flavor">
+        <one-of>
+            <item>strawberry</item>
+            <item>chocolate</item>
+            <item>banana</item>
+            <item>vanilla</item>
+        </one-of>
+    </rule>
+
+    <rule id="size">
+        <one-of>
+            <item>large</item>
+            <item>medium</item>
+            <item>small</item>
+        </one-of>           
+    </rule>
+
+    <rule id="count">
+        <one-of>
+            <item>a<tag>out=1</tag></item>
+            <item>one<tag>out=1</tag></item>
+            <item>two<tag>out=2</tag></item>
+        </one-of>
+    </rule>
+    
+    <rule id="yes">
+        <one-of>
+            <item>yes</item>
+            <item>yes I do</item>
+            <item>sure</item>
+            <item>yeah</item>
+            <item>of course</item>
+            <item>okay</item>
+        </one-of>
+    </rule>
+
+    <rule id="no">
+        <one-of>
+            <item>no</item>
+            <item>no way</item>
+            <item>nope</item>
+            <item>not really</item>
+            <item>I don't think so</item>
+        </one-of>
+    </rule>
+
+</grammar>

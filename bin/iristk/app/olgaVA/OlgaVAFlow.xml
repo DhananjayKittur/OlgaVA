@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<flow name="OlgaVAFlow" package="iristk.app.olgaVA" 
+    initial="Start" xmlns="iristk.flow" xmlns:p="iristk.flow.param" xmlns:dialog="iristk.flow.DialogFlow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="iristk.flow flow.xsd iristk.flow.DialogFlow DialogFlow.xsd">
+    
+    <var name="name" type="Record" value="new Record()"/>
+    
+    <state id="Start" extends="Dialog">
+        <onentry>
+            <if cond="count == 1">
+                <dialog:say>Hello ! I am Olga your Robo friend to help you with your daily activities </dialog:say>
+            </if>
+            <dialog:say>May I know you name please?</dialog:say>
+            <dialog:listen/>
+        </onentry>
+    </state>    
+    
+    <state id="Dialog">
+        <onevent name="sense.user.speak" cond="event?:sem:name">
+            <exec>name.adjoin(asRecord(event:sem:name))</exec>
+            <goto state="CheckName"/>  
+        </onevent>
+        <onevent name="sense.user.speak">
+            <dialog:say>Sorry, I <str cond="count > 1">still</str> didn't get that</dialog:say>
+            <reentry/>  
+        </onevent>
+        <onevent name="sense.user.silence">
+            <dialog:say>Sorry, I <str cond="count > 1">still</str> didn't hear anything</dialog:say>
+            <reentry/>  
+        </onevent>
+    </state>
+    
+    <state id="CheckName">
+        <onentry>
+            <if cond="!name?:firstName">
+                <goto state="RequestFirstName"/>
+            <elseif cond="!name?:age"/>
+                <goto state="RequestAge"/>
+            <elseif cond="eq(name:age:type, 'milkshake') and !name?:age:flavor"/>
+                <goto state="RequestFlavor"/>
+            <elseif cond="!name?:side"/>
+                <goto state="RequestSide"/> 
+            <else/>
+                <goto state="Done"/>
+            </if>
+        </onentry>
+    </state>
+    
+    <state id="RequestFirstName" extends="Dialog">
+        <onentry>
+            <dialog:say>Your First name is </dialog:say>
+            <dialog:listen/>
+        </onentry>
+        <onevent name="sense.user.speak" cond="event?:sem:yes">
+            <exec>name:firstName:type = "hamburger"</exec>
+            <goto state="CheckName"/>  
+        </onevent>
+        <onevent name="sense.user.speak" cond="event?:sem:no">
+            <exec>name:firstName:type = "none"</exec>
+            <goto state="CheckName"/>  
+        </onevent>
+    </state>
+    
+    <state id="RequestAge" extends="Dialog">
+        <onentry>
+            <dialog:say>your age is </dialog:say>
+            <dialog:listen/>
+        </onentry>
+        <onevent name="sense.user.speak" cond="event?:sem:yes">
+            <dialog:say>So How old are you</dialog:say>
+            <dialog:listen/>
+        </onevent>
+        <onevent name="sense.user.speak" cond="event?:sem:no">
+            <exec>name:age:type = "none"</exec>
+            <goto state="CheckName"/>  
+        </onevent>
+    </state>
+    
+    <state id="RequestFlavor" extends="Dialog">
+        <onentry>
+            <dialog:say>What flavor do you want in your milkshake?</dialog:say>
+            <dialog:listen/>
+        </onentry>
+        <onevent name="sense.user.speak" cond="event?:sem:flavor">
+            <exec>name:age:flavor = event:sem:flavor</exec>
+            <goto state="CheckName"/>  
+        </onevent>
+    </state>
+    
+    <state id="RequestSide" extends="Dialog">
+        <onentry>
+            <dialog:say>Do you want anything on the side, such as fries or sallad?</dialog:say>
+            <dialog:listen/>
+        </onentry>
+        <onevent name="sense.user.speak" cond="event?:sem:yes">
+            <dialog:say>So what do you want on the side?</dialog:say>
+            <dialog:listen/>
+        </onevent>
+        <onevent name="sense.user.speak" cond="event?:sem:no">
+            <exec>name:side:type = "none"</exec>
+            <goto state="CheckName"/>  
+        </onevent>
+    </state>
+    
+    <state id="Done">
+        <onentry>
+            <dialog:say>Okay, thanks for your Information</dialog:say>
+            <log><expr>name.toStringIndent()</expr></log>
+            <exec>System.exit(0)</exec>
+        </onentry>
+    </state>
+    
+</flow>
