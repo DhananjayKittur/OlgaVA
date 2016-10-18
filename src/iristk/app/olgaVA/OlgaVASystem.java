@@ -17,11 +17,14 @@ import iristk.speech.windows.WindowsSynthesizer;
 import iristk.system.IrisUtils;
 import iristk.system.SimpleDialogSystem;
 import iristk.util.Language;
+import iristk.app.chess.ChessFlow;
+import iristk.app.chess.ChessGame;
 import iristk.cfg.SRGSGrammar;
 import iristk.flow.FlowModule;
 
 public class OlgaVASystem {
 
+	private OlgaVA olgaVA;
 	public OlgaVASystem() throws Exception {
 		// Create the system
 		SimpleDialogSystem system = new SimpleDialogSystem(this.getClass());
@@ -41,8 +44,17 @@ public class OlgaVASystem {
 		// Add a synthesizer to the system		
 		system.setupSynthesizer(new WindowsSynthesizer(), Gender.FEMALE);
 		
+		olgaVA = new OlgaVA(system.getGUI());
+		// Listen for events in the chess game
+		
+		olgaVA.setGameListener(this);
+		olgaVA.start();
+		
+		
 		// Add the flow
-		system.addModule(new FlowModule(new OlgaVAFlow()));
+		OlgaVAFlow olgaFlow = new OlgaVAFlow();
+		//olgaFlow.setNumber(1);
+		system.addModule(new FlowModule(olgaFlow));
 		
 		// Load a grammar in the recognizer
 		system.loadContext("default", new SpeechGrammarContext(new SRGSGrammar(system.getPackageFile("OlgaVAGrammar.xml"))));
