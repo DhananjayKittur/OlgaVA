@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<flow name="OlgaVAFlow" package="iristk.app.olgaVA" 
+	initial="Start"	xmlns="iristk.flow" xmlns:p="iristk.flow.param" xmlns:dialog="iristk.flow.DialogFlow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="iristk.flow flow.xsd iristk.flow.DialogFlow DialogFlow.xsd">
+	
+	<var name="number" type="Integer"/>
+	<var name="guesses" type="Integer"/>
+	
+	<state id="Start">
+		<onentry>
+			<exec>number = 3</exec> 
+			<exec>guesses = 0</exec>
+			<dialog:say>Hello ! I am Olga.</dialog:say>
+            <dialog:say>I am bored Today! How are you doing ?</dialog:say>
+            <dialog:say>Lets play a car game. What you think? </dialog:say>
+            <dialog:say>In above four cars, which one you think the fastest car !</dialog:say>
+            <!-- <dialog:say>First one is a Audi R8 ! Manufactured by Audi AG's high performance private subsidiary company, Quattro GmbH</dialog:say>
+            <dialog:say>Second one is a  Lamborghini Aventador; mid-engined sports car produced by the Italian manufacturer Lamborghini.</dialog:say>
+            <dialog:say>Third one is a Tesla !  Model S which is a full-size all-electric five-door, luxury liftback, produced by Tesla Motors</dialog:say>
+            <dialog:say>Fourth one is a Volkswagen Phaeton. Which is a full-size luxury sedan manufactured by German automaker Volkswagen</dialog:say>
+            <dialog:say>You can tell me your answer by telling car name or moving the curser on the car!</dialog:say>  -->
+			<goto state="Guess"/>
+		</onentry>
+	</state>
+	
+	<state id="Guess" extends="Dialog">
+		<onentry>
+			<dialog:listen/>
+		</onentry>
+		<onevent name="sense.user.speak" cond="event?:sem:number">
+			<exec>guesses++</exec>
+			<if cond="asInteger(event:sem:number) == number">
+				<dialog:say>That was correct, you only needed <expr>guesses</expr> guesses.</dialog:say>
+				<goto state="CheckAgain"/>
+			<elseif cond="asInteger(event:sem:number) == 1"/>
+				<dialog:say>Sorry Audi is not the fastest car, May be it was in 2000.</dialog:say>
+				<reentry/>
+			<elseif cond="asInteger(event:sem:number) == 2"/>
+				<dialog:say>Sorry Lamborghini the fastest car untill 2015, not anymore.</dialog:say>
+				<reentry/>
+			<elseif cond="asInteger(event:sem:number) == 4"/>
+				<dialog:say>Sorry Volkswagen is a family sadan not a sports car to be the fastest one.</dialog:say>
+				<reentry/>
+			</if>
+		</onevent>
+	</state>
+	
+	<state id="CheckAgain" extends="Dialog">
+		<onentry>
+			<dialog:say>Do you want to play again?</dialog:say>
+			<dialog:listen/>
+		</onentry>
+		<onevent name="sense.user.speak" cond="event?:sem:yes">
+			<dialog:say>Okay, let's play again.</dialog:say>
+			<goto state="Start"/>
+		</onevent>
+		<onevent name="sense.user.speak" cond="event?:sem:no">
+			<dialog:say>Okay, goodbye</dialog:say>
+			<exec>System.exit(0)</exec>
+		</onevent>		
+	</state>
+	
+	<state id="Dialog">
+		<onevent name="sense.user.silence">
+			<dialog:say>I am sorry, I didn't hear anything.</dialog:say>
+			<reentry/>
+		</onevent>
+		<onevent name="sense.user.speak">
+			<dialog:say>I am sorry, I didn't get that.</dialog:say>
+			<reentry/>
+		</onevent>
+	</state>
+	
+
+</flow>
